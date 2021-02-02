@@ -209,6 +209,7 @@ public class PreparedStatement {
 					strReplaced = (Integer)listVal.get(nIdx) + "";
 				}
 				
+				strReplaced = Matcher.quoteReplacement(strReplaced);
 				matcher.appendReplacement(replacedString, strReplaced);		
 				nIdx++;
 		    }
