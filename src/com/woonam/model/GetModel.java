@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.woonam.connect.AgentConnect;
 import com.woonam.constants.Queries;
 import com.woonam.util.Common;
@@ -493,35 +495,58 @@ public class GetModel {
     	
     	return arObj_Res;
 	}
-	
+
 	public JsonArray Get_SlipList(Map<String, Object> mapParams)
 	{
 		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
 		JsonArray arObj_Res = new JsonArray();
-		
+
 		if (m_AC == null)	return null;
-		//Get current function name
-		
-		String type			= m_C.getParamValue(mapParams, "TYPE", null);
-		String[] arKey				= m_C.getParamValue(mapParams, "KEY");
-		String kind				= m_C.getParamValue(mapParams, "KIND", null);
-		String lang			= m_C.getParamValue(mapParams, "LANG", "KO");
-		
+
 		try
 		{
+			JsonParser parser = new JsonParser();
+			JsonElement je = parser.parse(m_C.getParamValue(mapParams, "CHECKED_LIST", null));
+			if(je == null ||je.isJsonNull()) {
+				return null;
+			}
+			JsonArray alCheckedList = je.getAsJsonArray();
+
+			StringBuffer sbSdocNo = new StringBuffer();
+			for(int i = 0 ; i < alCheckedList.size(); i++) {
+				JsonObject objItem = alCheckedList.get(i).getAsJsonObject();
+				sbSdocNo.append(objItem.get("sdocNo").getAsString());
+
+				if(i < alCheckedList.size() - 1) {
+					sbSdocNo.append(", ");
+				}
+			}
+
+
+			String strLang			= m_C.getParamValue(session, "LANG", "ko");
+
+
+//			@Value			varchar(max),			-- 전표번호
+//			@Field			varchar(20),			-- 조회 필드(JDOC_NO, JDOC_GROUP, SDOC_NO)
+//			@LANG			varchar(10),			-- KO, EN, JP
+//			@StartRowNum	varchar(10) = NULL,		-- RowNum 시작
+//			@EndRowNum		varchar(10) = NULL		-- RowNum 끝
+
+
 			PreparedStatement pStmt = new PreparedStatement(m_Profile);
-			pStmt.setQuery(Queries.GET_API_SLIP_LIST);
-			pStmt.setArray(0, new ArrayList<Object>(Arrays.asList(arKey)));
-			pStmt.setString(1, type);
-			pStmt.setString(2, kind);
-			pStmt.setString(3, lang);
+			pStmt.setQuery(Queries.GET_SLIP_LIST);
+			pStmt.setString(0, sbSdocNo.toString());
+			pStmt.setString(1, "SDOC_NO");
+			pStmt.setString(2, strLang);
+			pStmt.setString(3, "");
+			pStmt.setString(4, "");
 			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
-				
+
 			while(m_AC.next())
 			{
 				JsonObject obj_Item = new JsonObject();
 				obj_Item = m_AC.Get_itemObj(obj_Item, m_AC.Get_CurIndex());
-				
+
 				arObj_Res.add(obj_Item);
 			}
 		}
@@ -529,9 +554,11 @@ public class GetModel {
 		{
 			logger.error(strFuncName, e);
 		}
-    	
+
     	return arObj_Res;
 	}
+
+
 	
 	public JsonArray Get_CardData(Map<String, Object> mapParams)
 	{
@@ -1194,6 +1221,197 @@ public class GetModel {
 			PreparedStatement pStmt = new PreparedStatement(m_Profile);
 			pStmt.setQuery(Queries.GET_BOOKMARK_LIST);
 			pStmt.setProcArray(0, new ArrayList<Object>(Arrays.asList(jdocNo)));
+
+			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
+
+
+			while(m_AC.next())
+			{
+				JsonObject obj = new JsonObject();
+				arObjRes.add(m_AC.Get_itemObj(obj, m_AC.Get_CurIndex()));
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+			return null;
+		}
+
+		return arObjRes;
+	}
+
+	public JsonArray searchSlip(Map<String, Object> mapParams) {
+
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		JsonArray arObjRes = new JsonArray();
+
+		if (m_AC == null)	return null;
+
+		try
+		{
+			String strKeyword			= m_C.getParamValue(mapParams, "KEYWORD", null);
+			if(m_C.isBlank(strKeyword)) {  strKeyword =  m_C.getParamValue(mapParams, "NAME", null);  }
+			String strLang				= m_C.getParamValue(mapParams, "LANG", "ko");
+			String userId				= m_C.getParamValue(mapParams, "USER_ID", null);
+			String partNo				= m_C.getParamValue(mapParams, "PART_NO", null);
+			String corpNo				= m_C.getParamValue(mapParams, "CORP_NO", null);
+			String fromDate				= m_C.getParamValue(mapParams, "FROM_DATE", null);
+			if(m_C.isBlank(fromDate)) {  fromDate =  m_C.getParamValue(mapParams, "FROM", null);  }
+			String toDate				= m_C.getParamValue(mapParams, "TO_DATE", null);
+			if(m_C.isBlank(toDate)) {  toDate =  m_C.getParamValue(mapParams, "TO", null);  }
+			String used					= m_C.getParamValue(mapParams, "USED", "(0,1,2,3,4,5,6,7,8)");
+			String secu					= m_C.getParamValue(mapParams, "SECU", null);
+			String kind					= m_C.getParamValue(mapParams, "KIND", null);
+			String folder					= m_C.getParamValue(mapParams, "FOLDER", "");
+
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.SEARCH_SLIP);
+			pStmt.setString(0, corpNo);
+			pStmt.setString(1, partNo);
+			pStmt.setString(2, userId);
+			pStmt.setString(3, used);
+			pStmt.setString(4, secu);
+			pStmt.setString(5, fromDate);
+			pStmt.setString(6, toDate);
+			pStmt.setString(7, kind);
+			pStmt.setString(8, strKeyword);
+			pStmt.setString(9, folder);
+			pStmt.setString(10, strLang);
+			pStmt.setString(11, corpNo);
+			pStmt.setString(12, userId);
+
+
+
+			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
+
+
+			while(m_AC.next())
+			{
+				JsonObject obj = new JsonObject();
+				arObjRes.add(m_AC.Get_itemObj(obj, m_AC.Get_CurIndex()));
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+			return null;
+		}
+
+		return arObjRes;
+	}
+
+	public JsonArray getSlipListAPI(Map<String, Object> mapParams) {
+
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		JsonArray arObjRes = new JsonArray();
+
+		if (m_AC == null)	return null;
+
+		try
+		{
+			String strLang				= m_C.getParamValue(mapParams, "LANG", "ko");
+			String used					= m_C.getParamValue(mapParams, "USED", "(0,1,2,3,4,5,6,7,8)");
+			String kind					= m_C.getParamValue(mapParams, "KIND", null);
+			String type					= m_C.getParamValue(mapParams, "TYPE", "");
+			String key					= m_C.getParamValue(mapParams, "KEY", "");
+
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.GET_SLIP_LIST_API);
+			pStmt.setString(0, "");
+			pStmt.setString(1, "");
+			pStmt.setString(2, "");
+			pStmt.setString(3, used);
+			pStmt.setString(4, "");
+			pStmt.setString(5, "");
+			pStmt.setString(6, "");
+			pStmt.setString(7, kind);
+			pStmt.setString(8, "");
+			pStmt.setString(9, type);
+			pStmt.setString(10, strLang);
+			pStmt.setString(11, "");
+			pStmt.setString(12, "");
+			pStmt.setString(13, key);
+			pStmt.setString(14, "JDOC_NO");
+
+
+
+			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
+
+
+			while(m_AC.next())
+			{
+				JsonObject obj = new JsonObject();
+				arObjRes.add(m_AC.Get_itemObj(obj, m_AC.Get_CurIndex()));
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+			return null;
+		}
+
+		return arObjRes;
+	}
+
+	public JsonArray getUserList(Map<String, Object> mapParams) {
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		JsonArray arObjRes = new JsonArray();
+
+
+		if (m_AC == null)	return null;
+
+
+		try
+		{
+			String strKeyword			= m_C.getParamValue(mapParams, "KEYWORD", null);
+			String strLang				= m_C.getParamValue(mapParams, "LANG", "ko");
+
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.GET_USER_LIST);
+			pStmt.setString(0, strKeyword);
+			pStmt.setString(1, strLang);
+			pStmt.setString(2, "");
+			pStmt.setString(3, "");
+
+
+			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
+
+
+			while(m_AC.next())
+			{
+				JsonObject obj = new JsonObject();
+				arObjRes.add(m_AC.Get_itemObj(obj, m_AC.Get_CurIndex()));
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+			return null;
+		}
+
+		return arObjRes;
+	}
+
+
+	public JsonArray getSlipKindList(Map<String, Object> mapParams) {
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		JsonArray arObjRes = new JsonArray();
+
+
+		if (m_AC == null)	return null;
+
+
+		try
+		{
+
+			String corpNo		= m_C.getParamValue(session, "CORP_NO", null);
+			String strLang			= m_C.getParamValue(session, "LANG", "ko");
+
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.GET_SLIPKIND_LIST);
+			pStmt.setString(0, corpNo);
+			pStmt.setString(1, strLang);
+
 
 			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
 

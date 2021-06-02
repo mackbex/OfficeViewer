@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.woonam.connect.AgentConnect;
@@ -99,6 +100,93 @@ public class SetModel {
 		}
     	
     	return res;
+	}
+
+	public boolean addSlip(JsonArray alSlip, Map mapParams) {
+		boolean res = false;
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		if (m_AC == null)	return false;
+
+		try
+		{
+			String jdocNo = this.m_C.getParamValue(mapParams, "JDOC_NO", "");
+			String corpNo		= m_C.getParamValue(session, "CORP_NO", null);
+			String partNo		= m_C.getParamValue(session, "PART_NO", null);
+			String userID		= m_C.getParamValue(session, "USER_ID", null);
+
+			StringBuffer sbSdocNo = new StringBuffer();
+
+			for(int i = 0; i < alSlip.size(); i++) {
+				sbSdocNo.append(alSlip.get(i).getAsJsonObject().get("SDOC_NO").getAsString());
+
+				if(i < alSlip.size() - 1) {
+					sbSdocNo.append(",");
+				}
+			}
+
+
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.UPDATE_JDOC);
+			pStmt.setString(0, sbSdocNo.toString());
+			pStmt.setString(1, jdocNo);
+			pStmt.setString(2, corpNo);
+			pStmt.setString(3, userID);
+
+			String resQuery 	= m_AC.SetProcedure(pStmt.getQuery(), strFuncName);
+			String resFlag		= resQuery.substring(0,1);
+			int nResCnt			=  m_C.getResCnt(resQuery);
+			if(nResCnt > 0) res = true;
+
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+//			bRes = false;
+		}
+
+		return res;
+	}
+
+	public boolean copySdocNo(JsonArray alSlip, Map mapParams) {
+		boolean res = true;
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		if (m_AC == null)	return false;
+
+		try
+		{
+
+			String jdocNo = this.m_C.getParamValue(mapParams, "JDOC_NO", "");
+			String corpNo		= m_C.getParamValue(session, "CORP_NO", null);
+			String partNo		= m_C.getParamValue(session, "PART_NO", null);
+			String userID		= m_C.getParamValue(session, "USER_ID", null);
+
+			for(int i = 0; i < alSlip.size(); i++) {
+
+				String originalSdocNo = alSlip.get(i).getAsJsonObject().get("SDOC_NO").getAsString();
+
+				PreparedStatement pStmt = new PreparedStatement(m_Profile);
+				pStmt.setQuery(Queries.COPY_SDOC_NO);
+				pStmt.setString(0, originalSdocNo);
+				pStmt.setString(1, m_C.getIRN("S"));
+				pStmt.setString(2, "0");
+				pStmt.setString(3, corpNo);
+				pStmt.setString(4, userID);
+				pStmt.setString(5, jdocNo);
+
+				String resQuery 	= m_AC.SetProcedure(pStmt.getQuery(), strFuncName);
+				String resFlag		= resQuery.substring(0,1);
+				int nResCnt			=  m_C.getResCnt(resQuery);
+				if(nResCnt <= 0) res = false;
+				break;
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+//			bRes = false;
+		}
+
+		return res;
 	}
 
 
@@ -1033,15 +1121,17 @@ public boolean Copy_Replace(String jdocNo, String sdocNo, String corpNo, String 
 		String to				= m_C.getParamValue(mapParams, "TO", "");
 		String userID 		= m_C.getParamValue(mapParams, "USER_ID", null);
 		String corpNo		= m_C.getParamValue(mapParams, "CORP_NO", null);
-		
-    	try
+		String flag		= m_C.getParamValue(mapParams, "FLAG", null);
+
+		try
     	{
 			PreparedStatement pStmt = new PreparedStatement(m_Profile);
-			pStmt.setQuery(Queries.COPY_SLIP_JDOC_NO);
+			pStmt.setQuery(Queries.COPY_SLIP);
     		pStmt.setString(0, from);
         	pStmt.setString(1, to);
         	pStmt.setString(2, corpNo);
-        	pStmt.setString(3, userID);
+			pStmt.setString(3, userID);
+			pStmt.setString(4, flag);
     	
     		String res 			= m_AC.SetProcedure(pStmt.getQuery(), strFuncName);
     		String resFlag		= res.substring(0,1);

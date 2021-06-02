@@ -110,9 +110,9 @@
 		strResUserNM = objUserInfo.get("USER_NM").getAsString();
 		strResCorpNM = objUserInfo.get("CORP_NM").getAsString();
 
-		if(auth > 0) {
-			strViewMode = "EDIT";
-		}
+//		if(auth > 0) {
+//			strViewMode = "EDIT";
+//		}
 
 		session.setAttribute("CORP_NO", 	objUserInfo.get("CORP_NO").getAsString());
 		session.setAttribute("CORP_NM", 	strResCorpNM);
@@ -123,9 +123,6 @@
 		session.setAttribute("USER_LANG",	strLang.toLowerCase());
 		session.setAttribute("VIEW_MODE",	strViewMode);
 		session.setAttribute("AUTH",		objUserInfo.get("AUTH").getAsString());
-		session.setAttribute("RELATED_PART_NO", relatedPartNo);	//objUserInfo.get("RELATED_PART_NO").getAsString());
-		session.setAttribute("RELATED_PART_NM",	relatedPartNm);	//objUserInfo.get("RELATED_PART_NM").getAsString());
-		session.setAttribute("TOKEN",		token);
 
 
 	}
@@ -170,9 +167,7 @@ $(function(){
 	//If it's mobile mode
 	if($.Common.determineMobile() && "T" === useMobile)
 	{
-<%-- 	//	objParams['VIEW_MODE'] = "<%=strMobileMode%>"; --%>
 		targetURL 					= "<c:url value='/slip_mobile.jsp' />";
-		
 	}
 	
 	if("1" === "<%=isInterface%>") {

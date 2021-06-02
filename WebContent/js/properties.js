@@ -33,20 +33,43 @@ $.Lang = {
 				"TOOLTIP_MAGNIFIER" : "돋보기",
 				
 			},
-			CoCard: {
-				"TITLE": "법인카드 조회",
+			WebAdd : {
+
+			},
+			ServerAdd: {
+				"TITLE": "서버조회 추가",
+				"SDOC_KIND":"증빙종류",
 				"SEARCH_OPTION" : "검색 조건",
 				"ITEM_TITLE" : "제목",
-				"USER_ID" : "사번",
+				"CORP_NO" : "법인",
+				"PART_NO" : "부서",
+				"USER_ID" : "사용자",
 				"CABINET" : "조회일자",
+				"REG_TIME" : "등록일",
 				"SEARCH_RESULT" : "검색 결과",
 				"SEND_DATE" : "전송일자",
 				"APPR_NO" : "승인번호",
+				"USER_INFO" :"사용자 정보",
+				"SLIP_INFO" :"증빙 정보",
+				"SEARCH_USER" :"사용자 조회",
+				"STATUS" :"상태",
+				"UNUSED" :"미사용",
+				"USED" :"사용",
+				"USER" :"개인",
+				"CONFIRM" : "확인",
+				"PART" :"부서",
+				"SHARED" :"공용",
+				"AUTH" : "권한",
 				"PAGES" : "매수",
-				"SEARCH" : "검색",
+				"SLIP_CNT" : "증빙 수",
+				"SEARCH" : "조회",
+				"REGISTER_SLIP" : "등록",
+				"SDOC_NAME" :"증빙 명",
 				"SELECT_ROW":"선택",
+				"INPUT_SEARCH_KEYWORD" : "사용자 정보를 입력하세요.",
+				"PLACEHOLDER_INPUT_USERINFO":"사번 or 이름을 입력하세요.",
 				"REMOVE" : "삭제",
-				"CONFIRM_REMOVE_CHECKED" : "선택한 전표를 삭제하겠습니까?",
+				"CONFIRM_REGISTER_CHECKED" : "선택한 증빙을 추가하겠습니까?",
 				"ALERT_CHECK_SLIP" : "증빙을 선택하세요.",
 				"INPUT_DATE" : "날짜를 선택하세요.",
 				"INPUT_USER_ID" : "사번을 입력하세요.",
@@ -54,7 +77,15 @@ $.Lang = {
 				"INPUT_8_DIGITED_APPR_NO" : "8자리의 승인번호를 입력하세요.",
 				"FAILED_UPDATE_COCARD_APPR" : "승인번호 수정에 실패했습니다.",
 				"FAILED_SEARCH" : "증빙 조회에 실패했습니다.",
-				"APPLY" : "적용"
+				"FAILED_LOAD_SLIPKIND" : "증빙 종류 로드에 실패했습니다.",
+				"FAILED_SEARCH_USER" : "유저 조회에 실패했습니다.",
+				"APPLY" : "적용",
+				"NO_SELECTED_USER" : "선택된 사용자가 없습니다.",
+				"CATEGORY_SLIP" : "증빙",
+				"CATEGORY_ADDFILE" : "첨부파일",
+				"CATEGORY" : "구분",
+				"ADD_SLIP_SUCCESS" : "증빙을 등록했습니다."
+
 			},
 			Comment : {
 				"TITLE" : "Comments",
@@ -65,90 +96,6 @@ $.Lang = {
 				"CONFIRM_DOWNLOAD" : "코멘트를 삭제하시겠습니까?",
 				"EVIDENCE_KEY" : "승인번호",
 				"COMMENT_TIP" : "코멘트는 출력 시 화면에 표시되지 않습니다.",
-			},
-			Payment : {
-				"TITLE" : "전자결재 검색",
-				"SEARCH_OPTION" : "검색 조건",
-				"ITEM_TITLE" : "제목",
-				"ITEM_DRAFTER" : "기안자",
-				"ITEM_FORM" : "양식",
-				"ITEM_DRAFT_DATE":"기안일자",
-				"ITEM_DOC_DRAFT" :"기안문서",
-				"ITEM_DOC_CULC" : "회람문서",
-				"SEARCH" :"검색",
-				"SEARCH_RESULT" : "조회 결과",
-				"TOTAL" : "총 ",
-				"RESULT_UNIT" : "건",
-				"DOC_NO" : "Doc No.",
-				"DOC_NM" : "제목",
-				"FORM_NAME" : "양식 명",
-				"REG_NM" : "사번",
-				"REG_DEPT_NM" : "부서",
-				"DOC_REG_DATE" : "기안일",
-				"DOC_UPD_DATE" : "완료일",
-				"INPUT_TITLE" : "제목을 입력하세요.",
-				"INPUT_FORM" : "양식 명을 입력하세요.",
-				"INPUT_DRAFTER" : "기안자를 입력하세요.",
-				"INPUT_DATE" : "날짜를 선택하세요.",
-				"PAYMENT_URL_NULL" : "전자결재 인터페이스 URL이 설정되지 않았습니다.",
-				"NOT_VALID_DATE" : "날짜 형식이 올바르지 않습니다."
-			},
-			Related : {
-				"TITLE" : "관련근거문서 검색",
-				"SEARCH_OPTION" : "검색 조건",
-				"ITEM_DOC_DATE":"문서함 년도",
-				"SEARCH" :"검색",
-				"SEARCH_RESULT" : "조회 결과",
-				"TOTAL" : "총 ",
-				"RESULT_UNIT" : "건",
-				"DOC_NO" : "Doc No.",
-				"DOC_NM" : "제목",
-				"FORM_NAME" : "양식 명",
-				"ITEM_FLAG" : "구분",
-				"RADIO_ALL" : "전체",
-				"RADIO_RECEIVE" : "접수",
-				"RADIO_PRODUCT" : "생산",
-				"CHECKED_LIST" : "선택 대장",
-				"REG_NM" : "사번",
-				"REG_DEPT_NM" : "부서",
-				"DOC_REG_DATE" : "기안일",
-				"ADD" : "추가",
-				"CONFIRM" : "확인",
-				"CANCEL" : "취소",
-				"DOC_UPD_DATE" : "완료일",
-				"INPUT_TITLE" : "제목을 입력하세요.",
-				"INPUT_FORM" : "양식 명을 입력하세요.",
-				"INPUT_DRAFTER" : "기안자를 입력하세요.",
-				"INPUT_DATE" : "날짜를 선택하세요.",
-				"PAYMENT_URL_NULL" : "전자결재 인터페이스 URL이 설정되지 않았습니다.",
-				"NOT_VALID_DATE" : "날짜 형식이 올바르지 않습니다.",
-				"COMMAND_DESCRIPTION" : "관련근거 문서 선택 후 <span style='color:#ff0000'>\"추가\"</span> 버튼을 클릭해서 관련근거를 추가해 주십시오. 추가 후 <span style='color:#ff0000'>\"확인\"</span> 버튼을 클릭해서 작성중인 문서에 관련근거를 첨부합니다.",
-				"REG_FLAG" : "등록 구분",
-				"DOC_TYPE" : "문서 종류",
-				"REG_NO" : "등록 번호",
-				"REG_USER" : "기안자\n(업무담당자)",
-				"REG_DATE" :"등록일자\n(접수일자)",
-				"ENFORCE_DATE" : "시행일자",
-				"MOVE_DOC" : "문서함 이동",
-				"SELECT_ORG" : "조직 선택",
-				"CURRENT_ORG" : "현조직",
-				"SELECTED_ORG" : "선택된 조직",
-				"CLOSE" : "닫기",
-				"ALERT_SELECT_ORG" : "조직을 선택하세요.",
-				"DOC_ALL" : "전체대장",
-				"DOC_PROD" : "생산대장",
-				"DOC_RECV" : "접수대장",
-				"ALERT_SELECT_DOCUMENT" : "문서를 추가하세요.",
-				"ALERT_MAX_REACHED" : "40건이상의 문서를 동시에 업로드할 수 없습니다.",
-				"ALERT_ALREADY_DOC_ADDED" : "문서는 관련근거에 존재합니다.",
-				"FAILED_UPLOAD_DOCUMENT" : "문서등록에 실패했습니다.",
-				"CHECK_SSO" : "SSO 로그인 상태를 확인해주세요.",
-				"FAILED_LOAD_ORGLIST" : "부서정보 로드에 실패했습니다.",
-				"FAILED_LOAD_DOCLIST" : "문서 리스트 로드에 실패했습니다."
-
-
-
-
 			},
 			History : {
 				"MSG" : "History",
@@ -218,7 +165,8 @@ $.Lang = {
 				"Confirm" : "확인",
 				"Cancel" : "취소",
 				"ADD_SLIP" : "전자증빙 추가",
-				"SERVER_ADD_SLIP" : "전자증빙 추가(서버)",
+				"WEB_ADD_SLIP" : "전자증빙 추가 (Web)",
+				"SERVER_ADD_SLIP" : "전자증빙 추가 (서버)",
 				"ADD_ATTACH" : "첨부파일 추가",
 				"OPEN_COMMENT" : "코멘트 보기",
 				"VIEW_PROPERTY" : "증빙 속성",
@@ -263,6 +211,9 @@ $.Lang = {
 				"SERVER_EXCEPTION" : "Server exception.",
 				"NO_TARGET_INDEX" : "이동할 증빙 대상이 없습니다.",
 				"FAILED_LOAD_DRAW_BOOKMARK_TOOL" : "북마크 툴 로드에 실패했습니다.",
+				"SELECT_SLIP" : "증빙을 선택하세요.",
+				"FAILED_LOAD_SLIPINFO" : "증빙 정보 불러오기에 실패했습니다.",
+				"FAILED_ADD_SLIP" : "증빙 추가에 실패했습니다."
 			}
 		}
 }
@@ -312,9 +263,9 @@ $.Menu = {
 //					"CS_OPERATION" :"1",
 //					"MODE" : "VIEW",
 //				},
-				{
-					"ID" : "SEPARATOR"
-				},
+// 				{
+// 					"ID" : "SEPARATOR"
+// 				},
 				/*{	
 					"ID" : "MOVE_FRONT",
 					"ICON" : "image/common/context/move_front.png",
@@ -329,21 +280,29 @@ $.Menu = {
 					"ID" : "SEPARATOR",
 					"MODE" : "EDIT"
 				},
-				{	
-					"ID" : "PRINT_SLIP",
-					"ICON" : "image/common/context/print_slip.png",
-					"CS_OPERATION" :"1",
-					"MODE" : "VIEW"
-				},
-				{	
-					"ID" : "SEPARATOR"
-				},*/
+
+
+				 */
+				//
+				// {
+				// 	"ID" : "SERVER_ADD_SLIP",
+				// 	"ICON" : "image/common/context/server_add_slip.png",
+				// 	"MODE" : "EDIT"
+				// },
+				// {
+				// 	"ID" : "SEPARATOR"
+				// },
 				{
 					"ID" : "DOWNLOAD_CS",
 					"ICON" : "image/common/context/download_cs.png"
 				}
 			],
 			Add : [
+				// {
+				// 	"ID" : "WEB_ADD_SLIP",
+				// 	"ICON" : "image/common/context/add_slip.png",
+				// 	"MODE" : "EDIT"
+				// },
 				{
 					"ID" : "ADD_SLIP",
 					"ICON" : "image/common/context/add_slip.png",
@@ -351,39 +310,33 @@ $.Menu = {
 					"MODE" : "EDIT"
 				},
 				// {
-				// 	"ID" : "SCHEDULED_LIST",
-				// 	"ICON" : "image/common/context/scheduled_list.png",
+				// 	"ID" : "ADD_SCAN",
+				// 	"ICON" : "image/common/context/scanner.png",
 				// 	"CS_OPERATION" :"1",
 				// 	"MODE" : "EDIT"
 				// },
-				{
-					"ID" : "ADD_SCAN",
-					"ICON" : "image/common/context/scanner.png",
-					"CS_OPERATION" :"1",
-					"MODE" : "EDIT"
-				},
 				// {
 				// 	"ID" : "ADD_AFTER",
 				// 	"ICON" : "image/common/context/add_after.png",
 				// 	"CS_OPERATION" :"1",
 				// 	"MODE" : "EDIT"
 				// },
-				{
-					"ID" : "ADD_CAPTURE",
-					"ICON" : "image/common/context/capture.png",
-					"CS_OPERATION" :"1",
-					"MODE" : "EDIT"
-				},
-				{
-					"ID" : "ADD_URL",
-					"ICON" : "image/common/context/link.png",
-					"CS_OPERATION" :"1",
-					"MODE" : "EDIT"
-				},
-				{
-					"ID" : "SEPARATOR",
-					"MODE" : "EDIT"
-				},
+				// {
+				// 	"ID" : "ADD_CAPTURE",
+				// 	"ICON" : "image/common/context/capture.png",
+				// 	"CS_OPERATION" :"1",
+				// 	"MODE" : "EDIT"
+				// },
+				// {
+				// 	"ID" : "ADD_URL",
+				// 	"ICON" : "image/common/context/link.png",
+				// 	"CS_OPERATION" :"1",
+				// 	"MODE" : "EDIT"
+				// },
+				// {
+				// 	"ID" : "SEPARATOR",
+				// 	"MODE" : "EDIT"
+				// },
 				{
 					"ID" : "ADD_ATTACH",
 					"ICON" : "image/common/context/add_attach.png",
@@ -685,7 +638,7 @@ $.Color = {
 		History: {
 			"TITLE": "555555"
 		},
-		CoCard: {
+		ServerAdd: {
 			"TITLE": "555555",
 			"BACKGROUND" : "f1f1f7",
 			"TITLE_FONT_COLOR" : "48465b",
@@ -721,6 +674,7 @@ $.Color = {
 		"NAVIGATION_FONT": "ffffff",
 		"BADGE" : "5085bb",
 		"FOCUSED_SLIP":"2b333b",
-		"FOCUSED_ATTACH":"e6e6e6"
+		"FOCUSED_ATTACH":"e6e6e6",
+		"USER_SEARCH_BTN" :"999999",
 	}
 }

@@ -408,10 +408,12 @@ $.Actor = {
 			});
 
 
-			$.Actor.getAttachList($.Actor, $.Actor.params, $.Actor.attachRange);
-			
-			if(!$.Actor.params.MULTI_KEY) {
-				$.Actor.getCommentCnt();
+			if("EACCT" !== $.Actor.params.VIEW_MODE.toUpperCase()) {
+				$.Actor.getAttachList($.Actor, $.Actor.params, $.Actor.attachRange);
+
+				if(!$.Actor.params.MULTI_KEY) {
+					$.Actor.getCommentCnt();
+				}
 			}
 			
 			$('#slip_masonry').masonry({
@@ -633,8 +635,8 @@ $.Actor = {
 			// }
 
 			var objListParams = {
-				KEY : params.KEY,
-				KEY_TYPE : params.KEY_TYPE,
+				KEY :  params.KEY,
+				KEY_TYPE : "EACCT" === parent.params.VIEW_MODE.toUpperCase() ? 'SDOC_NO' : params.KEY_TYPE,
 				USER_ID : params.USER_ID,
 				CORP_NO : params.CORP_NO,
 				LANG : params.LANG
@@ -1610,6 +1612,7 @@ $.Actor = {
 		},
 		displayFoldThumb : function(parent, id, groupNo) {
 
+			var arThumbInfo = Object.keys(parent.objSlipItem);
 
 			var itemIdx = $("#slip_masonry").find("[idx=" + id + "]").index();
 

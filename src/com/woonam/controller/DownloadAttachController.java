@@ -86,7 +86,7 @@ public class DownloadAttachController extends HttpServlet {
 			String fileName = m_GM.getAttachFileName(mapParams);
 			
 			if(m_C.isBlank(fileName)) {
-				resp.getWriter().print(m_C.writeResultMsg("F", "FAILED_GET_FILEAME"));
+				resp.getWriter().print(m_C.writeResultMsg("F", "FAILED_GET_FILENAME"));
 				return;
 			}
 			

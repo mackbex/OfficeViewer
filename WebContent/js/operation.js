@@ -128,20 +128,23 @@ $.Operation  = {
 			case "REMOVE_SLIP_API" :
 				deferred = $.Operation.removeSlip(target, objData);
 				break;
-			case "UPDATE_COCARD_APPR" :
-				deferred = $.Operation.updateCoCardAppr(target, objData);
-				break;
-			case "GET_COCARD_LIST" :
-				deferred = $.Operation.getCoCardList(target, objData);
-				break;
-			case "DISPLAY_COCARD" :
-				deferred = $.Operation.displaySlip(target, objData);
-				break;
-			case "OPEN_RELATED_POPUP" :
-				$.Operation.Open_Related(target, objData);
+			case "GET_SLIPKIND_LIST" :
+				deferred = $.Operation.getSlipKindList(target, objData);
 				break;
 			case "SCHEDULED_LIST" :
 				$.Operation.Open_ScheduledLIst(target, objData);
+				break;
+			case "SERVER_ADD_SLIP" :
+				$.Operation.Open_AddFromServer(target, objData);
+				break;
+			case "WEB_ADD_SLIP" :
+				$.Operation.Open_AddSlipWeb(target, objData);
+				break;
+			case "SEARCH_SLIP" :
+				deferred = $.Operation.searchSlip(target, objData);
+				break;
+			case "GET_USER_LIST" :
+				deferred = $.Operation.getUserList(target, objData);
 				break;
 			}
 
@@ -704,8 +707,34 @@ $.Operation  = {
 				$.OfficeXPI.CallLocalWAS(sbParam.toString(), target.pageSubmit);
 			}
 		},
+		Open_AddFromServer : function(target, objData) {
+			var popupTitle = "Add Slip";
+			var sbURL = new StringBuffer();
+			sbURL.append(g_RootURL+"server_add.jsp?");
+			sbURL.append("JDOC_NO="+target.params.KEY_ORIGIN);
+
+			var nWidth 	= 1200;
+			var nHeight 	= 800;
+			var vPopupCenterPosition = $.Common.getDisplayCenterPosition(nWidth, nHeight);
+
+			var elPopup = window.open(sbURL.toString(), popupTitle, vPopupCenterPosition+', toolbar=0, directories=0, status=0, menubar=0, scrollbars=0, resizable=0');
+
+		},
+		Open_AddSlipWeb : function(target, objData) {
+			var popupTitle = "Add Slip";
+			var sbURL = new StringBuffer();
+			sbURL.append(g_RootURL+"slip_add.jsp?");
+			sbURL.append("JDOC_NO="+target.params.KEY_ORIGIN);
+
+			var nWidth 	= 600;
+			var nHeight 	= 700;
+			var vPopupCenterPosition = $.Common.getDisplayCenterPosition(nWidth, nHeight);
+
+			var elPopup = window.open(sbURL.toString(), popupTitle, vPopupCenterPosition+', toolbar=0, directories=0, status=0, menubar=0, scrollbars=0, resizable=0');
+
+		},
 		downloadAttach : function(target, objData) {
-			
+
 			var isURL = objData.SDOC_URL;
 			if("1" == isURL) {
 				var sbURL = new StringBuffer();
@@ -901,22 +930,102 @@ $.Operation  = {
 		// Remove slip / addfile by I/F Key
 		removeAll : function(target) {
 			$.Common.simpleConfirm(null,target.localeMsg.CONFIRM_REMOVE_ALL, function(){
-				var objRemoveParams = {
+
+				if("EACCT" === target.params.VIEW_MODE) {
+
+					var objCheckedSlip_SlipIrnData 		= [];
+					var objCheckedSlip_SDocNoData 	= [];
+
+					var elSlip 		= $("#area_slip").find("[id=chk]");
+
+					//Get slip key
+					$.each(elSlip, function(){
+						var elSlip = $(this).closest(".slip_item");
+
+						var idx = elSlip.attr("idx");
+						var objItemData = target.objSlipItem[idx];
+						var isFirst = objItemData.SDOCNO_INDEX;
+
+						if("1" === isFirst) {
+							var isFold = objItemData.IS_FOLD;
+							if(isFold) {
+								objCheckedSlip_SDocNoData.push(objItemData.SDOC_NO);
+							}
+							else {
+								objCheckedSlip_SlipIrnData.push(objItemData.SLIP_IRN);
+							}
+						}
+						else
+						{
+							objCheckedSlip_SlipIrnData.push(objItemData.SLIP_IRN);
+						}
+					});
+
+					//Remove slip by SLIP_IRN
+					if(objCheckedSlip_SlipIrnData.length > 0)
+					{
+						var objSlipParams = {
+							FIELD : "SLIP_IRN",
+							VALUE : objCheckedSlip_SlipIrnData,
+							LANG : target.params.LANG,
+							VIEW_MODE : target.params.VIEW_MODE
+						};
+
+						$.when($.Common.RunCommand(g_ActorCommand, "REMOVE_SELECTED_SLIP", objSlipParams)).then(function(objResSlip){
+
+							if("T" === objResSlip.RESULT.toUpperCase())
+							{
+								target.reset();
+							}
+							else {
+								$.Common.simpleAlert(null, objResSlip.MSG, null);
+							}
+						});
+					}
+
+					//Remove slip by SDOC_NO
+					if(objCheckedSlip_SDocNoData.length > 0)
+					{
+						var objSlipParams = {
+							FIELD : "SDOC_NO",
+							VALUE : objCheckedSlip_SDocNoData,
+							LANG : target.params.LANG,
+							VIEW_MODE : target.params.VIEW_MODE
+						};
+
+						$.when($.Common.RunCommand(g_ActorCommand, "REMOVE_SELECTED_SLIP", objSlipParams)).then(function(objResSlip){
+
+							if("T" === objResSlip.RESULT.toUpperCase())
+							{
+								target.reset();
+							}
+							else {
+								$.Common.simpleAlert(null, objResSlip.MSG, null);
+							}
+						});
+					}
+
+
+				}
+				else {
+					var objRemoveParams = {
 						VALUE : target.params.KEY,
 						FIELD : target.params.KEY_TYPE,
 						LANG : target.params.LANG,
 						VIEW_MODE : target.params.VIEW_MODE
-				};
-				
-				$.when($.Common.RunCommand(g_ActorCommand, "REMOVE_ALL", objRemoveParams)).then(function(objRes){
-					if("T" == objRes.RESULT.toUpperCase())
-					{
-						target.reset();
-					}
-					else {
-						$.Common.simpleAlert(null,target.localeMsg[objRes.MSG]);
-					}
-				});
+					};
+
+					$.when($.Common.RunCommand(g_ActorCommand, "REMOVE_ALL", objRemoveParams)).then(function(objRes){
+						if("T" == objRes.RESULT.toUpperCase())
+						{
+							target.reset();
+						}
+						else {
+							$.Common.simpleAlert(null,target.localeMsg[objRes.MSG]);
+						}
+					});
+				}
+
 			});
 		},
 		Write_Comment : function(target, objData) {
@@ -1097,12 +1206,55 @@ $.Operation  = {
 
 			return deferred.promise();
 		},
-		getCoCardList : function(target, objData) {
+		searchSlip : function (target, objData) {
+			var deferred = $.Deferred();
+			$.when($.Common.RunCommand(g_ServerAddCommand, "SEARCH_SLIP", objData)).then(function(objRes) {
+
+				if(objRes.RESULT == null)
+				{
+					deferred.resolve(objRes);
+				}
+				else {
+					deferred.reject(objRes.MSG);
+				}
+
+			}, function (reason) {
+				deferred.reject(reason)
+			});
+
+			return deferred.promise();
+		},
+		getSlipKindList : function(target, objData) {
 
 			var deferred = $.Deferred();
-			$.when($.Common.RunCommand(g_CoCardCommand, "GET_COCARD_LIST", objData)).then(function(objRes) {
+			$.when($.Common.RunCommand(g_ServerAddCommand, "GET_SLIPKIND_LIST", objData)).then(function(objRes) {
 
-				deferred.resolve(objRes);
+				if(objRes.RESULT == null)
+				{
+					deferred.resolve(objRes);
+				}
+				else {
+					deferred.reject(objRes.MSG);
+				}
+
+			}, function (reason) {
+				deferred.reject(reason)
+			});
+
+			return deferred.promise();
+		},
+		getUserList : function(target, objData) {
+
+			var deferred = $.Deferred();
+			$.when($.Common.RunCommand(g_ServerAddCommand, "GET_USER_LIST", objData)).then(function(objRes) {
+
+				if(objRes.RESULT == null)
+				{
+					deferred.resolve(objRes);
+				}
+				else {
+					deferred.reject(objRes.MSG);
+				}
 
 			}, function (reason) {
 				deferred.reject(reason)

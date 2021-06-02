@@ -104,6 +104,7 @@ var g_CommentCommand		= "${pageContext.request.contextPath}/CommentCommand.do";
 var g_RelatedCommand		= "${pageContext.request.contextPath}/RelatedCommand.do";
 var g_HistoryCommand		= "${pageContext.request.contextPath}/HistoryCommand.do";
 var g_CoCardCommand			= "${pageContext.request.contextPath}/CoCardCommand.do";
+var g_ServerAddCommand		= "${pageContext.request.contextPath}/ServerAddCommand.do";
 var g_BookmarkCommand		= "${pageContext.request.contextPath}/BookmarkCommand.do";
 var g_RootURL				= "${pageContext.request.contextPath}/";
 var g_XPI_URL				= "${pageContext.request.contextPath}/js/localWAS/OfficeXPI.js";

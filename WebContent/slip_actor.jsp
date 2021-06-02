@@ -128,15 +128,17 @@
 				<img src="<c:url value="/image/pc/actor/btn_add_slip.png" />" />
 			</div>
 		</c:if>
-		<c:if test="${KeyType eq 'JDOC_NO' }">
-			<div id="btn_open_comment" onclick="javascript:$.Operation.execute($.Actor, this);" command="OPEN_COMMENT" >
-				<img src="<c:url value="/image/pc/actor/btn_open_comment.png" />" />
-			</div>
-			<div id="btn_open_history" onclick="javascript:$.Operation.execute($.Actor, this);" command="OPEN_HISTORY"  >
-				<img src="<c:url value="/image/pc/actor/btn_open_history.png" />" />
-			</div>
-		</c:if>
 		<c:if test="${ViewMode eq 'EDIT' or ViewMode eq 'AFTER'}">
+			<c:if test="${KeyType eq 'JDOC_NO' }">
+				<div id="btn_open_comment" onclick="javascript:$.Operation.execute($.Actor, this);" command="OPEN_COMMENT" >
+					<img src="<c:url value="/image/pc/actor/btn_open_comment.png" />" />
+				</div>
+				<div id="btn_open_history" onclick="javascript:$.Operation.execute($.Actor, this);" command="OPEN_HISTORY"  >
+					<img src="<c:url value="/image/pc/actor/btn_open_history.png" />" />
+				</div>
+			</c:if>
+		</c:if>
+		<c:if test="${ViewMode eq 'EDIT' or ViewMode eq 'AFTER' or ViewMode eq 'EACCT'}">
 			<div id="btn_remove" >
 				<img src="<c:url value="/image/pc/actor/btn_remove.png" />" 	/>
 			</div>
@@ -146,7 +148,7 @@
 		</div>
 	</div>
 	<div class="actor_right">
-		<div class="slip_wrapper">
+		<div class="slip_wrapper" style="<c:if test="${ViewMode eq 'EACCT'}">height:100% !important;</c:if>">
 			<div class="slip_title">
 				<div class="slip_title_left">
 					<div class="cb_slip_all">
@@ -229,7 +231,7 @@
 			</div>
 		</div>
 		<div id="dragBar" dragging="0"></div>
-		<div class="attach_wrapper">
+		<div class="attach_wrapper" style="<c:if test="${ViewMode eq 'EACCT'}">display:none !important;</c:if>">
 			<div class="attach_title">
 				<div class="attach_title_left">
 					<div class="cb_attach_all">

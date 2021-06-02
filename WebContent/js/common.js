@@ -118,7 +118,7 @@ $.Common = {
 			
 			//show/hide remove button
 			if(!$.Common.isBlank(objMember.currentKey) && "JDOC_NO" == objMember.params.KEY_TYPE && 
-					("EDIT" == objMember.params.VIEW_MODE || "AFTER" == objMember.params.VIEW_MODE ))
+					("EDIT" == objMember.params.VIEW_MODE || "AFTER" == objMember.params.VIEW_MODE || "EACCT" == objMember.params.VIEW_MODE ))
 			{
 				if($(".key_select > option:selected").html() != "ALL") {
 					if($("#btn_remove") != null) $("#btn_remove").show();
@@ -470,7 +470,7 @@ $.Common = {
 			
 			return arObjMenu;
 		},
-		simpleAlert : function(title, msg, duration) {
+		simpleAlert : function(title, msg, duration, callback) {
 			
 			//Draw alert area
 			var elWrapperAlert = $(document.createElement('div'));
@@ -514,6 +514,9 @@ $.Common = {
 			var evClick = function() {
 				elWrapperAlert.remove();
 				$(document).unbind("keyup");
+				if(callback) {
+					callback();
+				}
 			}
 			
 			$(document).bind("keyup",function(e){
@@ -529,7 +532,8 @@ $.Common = {
 
 
 			});
-			
+
+
 			elWrapperAlert.focus();
 		},
 

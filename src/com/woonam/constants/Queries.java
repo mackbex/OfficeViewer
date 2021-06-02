@@ -56,7 +56,7 @@ public class Queries {
 	public final static String GET_CASH_CONVERT_LIST = " EXEC ProcImg_Cash_ConvertList ?, ?, ?, ?, ? ";
     public final static String GET_TAX_CONVERT_LIST = " EXEC ProcImg_Tax_ConvertList ?, ?, ?, ?, ?, ? ";
     public final static String GET_TAXITEM_CONVERT_LIST = " EXEC ProcImg_TaxItem_ConvertList ? ";
-	public final static String COPY_SLIP_JDOC_NO = " EXEC ProcImg_Copy ?, ?, ?, ? ";
+	public final static String COPY_SLIP = " EXEC ProcImg_Copy ?, ?, ?, ?, ? ";
 	public final static String COPY_SLIP_COCARD = " EXEC ProcImg_Copy_COCARD ?, ?, ?, ? ";
 	public final static String GET_SLIP_INFO = " EXEC ProcImg_SlipDOC ?, ?, ? ";
 	public final static String ADD_BOOKMARK = " EXEC ProcImg_BookMark_Add ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ";
@@ -111,6 +111,9 @@ public class Queries {
 			+ " ?, CURRENT_TIMESTAMP,  ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ? "
 			+ ")  ";
 
+	public final static String UPDATE_JDOC = " ProcImg_JdocNo ?, ?, ?, ? ";
+	public final static String COPY_SDOC_NO = " ProcImg_Copy_Slip ?, ?, ?, ?, ?, ? ";
+
 
      public final static String VERIFY_SLIP_CNT = " Select Count(DOC_IRN) As CNT From WD_IMG_SLIP_X Where DOC_IRN In (?) ";
      public final static String VERIFY_THUMB_CNT = " Select Count(DOC_IRN) As CNT From WD_IMG_SLIP_M Where DOC_IRN In (?) "; 
@@ -124,5 +127,11 @@ public class Queries {
      public final static String HISTORY_ADD = " EXEC ProcImg_History_Add ?, ?, ?, ?, ?, ?";
      public final static String COPY_REPLACE = " EXEC ProcImg_COPY_REPLACE ?, ?, ?, ? ";
      public final static String GET_RECYCLE_LIST = " Select * From IMG_PTISVR_RESULT_T Where PTI_TYPE='04' And PTI_STATUS = '00'  ";
-     public final static String GET_BOOKMARK_LIST = " EXEC ProcImg_BookMark_JDocNo ? ";
+	 public final static String GET_BOOKMARK_LIST = " EXEC ProcImg_BookMark_JDocNo ? ";
+	 public final static String GET_USER_LIST = " EXEC ProcImg_User ?, ?, ?, ? ";
+	public final static String GET_SLIPKIND_LIST = " exec ProcImg_Slipkind ?, '1', '', ?, '' ";
+	public final static String SEARCH_SLIP = " exec ProcImg_Search ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ";
+	public final static String GET_SLIP_LIST_API = " exec ProcImg_Search ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ";
+
+
 }
