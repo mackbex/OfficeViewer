@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.woonam.log4j2.LogScheduler;
 import com.woonam.model.GetModel;
@@ -600,6 +601,11 @@ public class Common {
 			}
 		}
 		return sbParam.toString();
+	}
+
+	public String getStringOrDefault(JsonElement el, String def) {
+
+		return el == null || el.isJsonNull()  ? def : el.getAsString().trim();
 	}
 
 	/**

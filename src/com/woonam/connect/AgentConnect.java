@@ -385,4 +385,56 @@ public class AgentConnect
 		}
 		return result;
 	}
+
+	public String SetSAPData(String sapTag, String funcName) {
+		String strTemp = strServerKey + "                                                                                                                                                           ";
+		strTemp = strTemp.substring(0, 32);
+
+		logger.info("------------------------------SetSAPData query--------------------------------\n- Func Name : " + funcName + "\n- Query : " + sapTag + "\n", 6);
+
+		int Querylength = 0;
+		try {
+			Querylength = sapTag.getBytes(strCharSet).length;
+		} catch (UnsupportedEncodingException e) {
+			logger.error("GetData Exception", e);
+		}//Cm.Getlength(strQuery);
+
+		StringBuffer buff = new StringBuffer()
+				.append("R")
+				.append(strTemp)
+				.append((new DecimalFormat("000000000000")).format(Querylength))
+				.append(sapTag);
+		SocketConnect skc = new SocketConnect();
+		String strResult = skc.request(strServerIp, nServerPort, buff.toString(), "full", strCharSet);
+
+		logger.info("Result : " + strResult);
+
+		return strResult;
+	}
+
+	public String GetSAPData(String sapTag, String funcName) {
+		String strTemp = strServerKey + "                                                                                                                                                           ";
+		strTemp = strTemp.substring(0, 32);
+
+		logger.info("------------------------------GetSAPData query--------------------------------\n- Func Name : " + funcName + "\n- Query : " + sapTag + "\n", 6);
+
+		int Querylength = 0;
+		try {
+			Querylength = sapTag.getBytes(strCharSet).length;
+		} catch (UnsupportedEncodingException e) {
+			logger.error("GetData Exception", e);
+		}//Cm.Getlength(strQuery);
+
+		StringBuffer buff = new StringBuffer()
+				.append("R")
+				.append(strTemp)
+				.append((new DecimalFormat("000000000000")).format(Querylength))
+				.append(sapTag);
+		SocketConnect skc = new SocketConnect();
+		String strResult = skc.request(strServerIp, nServerPort, buff.toString(), "full", strCharSet);
+
+		logger.info("Result : " + strResult);
+
+		return strResult.substring(14,strResult.length());
+	}
 }

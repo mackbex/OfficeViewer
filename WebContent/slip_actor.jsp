@@ -148,7 +148,7 @@
 		</div>
 	</div>
 	<div class="actor_right">
-		<div class="slip_wrapper" style="<c:if test="${ViewMode eq 'EACCT'}">height:100% !important;</c:if>">
+		<div class="slip_wrapper" style="height:100% !important;">
 			<div class="slip_title">
 				<div class="slip_title_left">
 					<div class="cb_slip_all">
@@ -231,7 +231,7 @@
 			</div>
 		</div>
 		<div id="dragBar" dragging="0"></div>
-		<div class="attach_wrapper" style="<c:if test="${ViewMode eq 'EACCT'}">display:none !important;</c:if>">
+		<div class="attach_wrapper" style="display:none !important;">
 			<div class="attach_title">
 				<div class="attach_title_left">
 					<div class="cb_attach_all">

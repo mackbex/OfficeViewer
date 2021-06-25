@@ -15,7 +15,7 @@ public class Queries {
 //																	+ " Where a.FOLDER='SLIPDOC' And a.? in (?) ";
 //
 	public final static String GET_ATTACH_LIST = "EXEC ProcImg_AddFile ?, ?, ?, ?, ? ";
-	public final static String GET_SLIP_LIST = "EXEC ProcImg_Slip ?, ?, ?, ? ,? ";
+	public final static String GET_SLIP_LIST = "EXEC ProcImg_SlipList_PTISVR ?, ?, ?, ? ,? ";
 	public final static String GET_HISTORY_LIST = "EXEC ProcImg_History ?,?, ?";
 	public final static String GET_COMMENT_LIST = "EXEC ProcImg_Comment ?, ?";
 	public final static String GET_IRN = "EXEC ProcImg_GetIrn ?";
@@ -66,14 +66,14 @@ public class Queries {
 			"\"MARK_LineWidth\", \"MARK_LineColor\", \"MARK_BackColor\", \"MARK_Alpha\", \"MARK_Comment\", \"MARK_TextColor\", \"MARK_FontName\", \"MARK_FontSize\"," +
 			"\"MARK_BackGround\", \"MARK_Italic\", \"MARK_Bold\", ENABLE, CORP_NO, REG_USER, REG_TIME, SDOC_SYSTEM ) Values (" +
 			" ?, 'PC', ?, ?, '2', ?, '1', '0,0,0' , '255,255,255', '50', ? , '0,0,0', '굴림' ,'22', " +
-			" '1', '0', '1', '1', ?, ?, CURRENT_TIMESTAMP, '1' " +
+			" '1', '0', '1', '1', ?, ?, GetDate(), '1' " +
 			") ";
 
 	public final static String ADD_BOOKMARK_FOR_CASH = " Insert Into IMG_BOOKMARK_T (MARK_IRN, DEVICE, SDOC_NO, SLIP_IRN, MARK_TYPE,  MARK_RECT," +
 			"\"MARK_LineWidth\", \"MARK_LineColor\", \"MARK_BackColor\", \"MARK_Alpha\", \"MARK_Comment\", \"MARK_TextColor\", \"MARK_FontName\", \"MARK_FontSize\"," +
 			"\"MARK_BackGround\", \"MARK_Italic\", \"MARK_Bold\", ENABLE, CORP_NO, REG_USER, REG_TIME, SDOC_SYSTEM ) Values (" +
 			" ?, 'PC', ?, ?, '2', ?, '1', '0,0,0' , '255,255,255', '50', ? , '0,0,0', '굴림' ,'22', " +
-			" '1', '0', '1', '1', ?, ?, CURRENT_TIMESTAMP, '1' " +
+			" '1', '0', '1', '1', ?, ?, GetDate(), '1' " +
 			") ";
 
 	public final static String REMOVE_BY_KIND = " EXEC ProcImg_JdocNo_DelKind ?, ?, ?, ? ";
@@ -93,22 +93,22 @@ public class Queries {
      		+ "SDOC_STEP, SDOC_FLAG, SDOC_URL, SDOC_AFTER, SDOC_PTI, SDOC_COPY, SDOC_SECU, SDOC_SYSTEM, SDOC_NAME, SDOC_DEVICE,"
      		+ " SLIP_CNT, REG_TIME, UPDATE_TIME, JDOC_NO, JDOC_INDEX, SDOC_FOLLOW, INFO_ETC) "
      		+ "Values ("
-     		+ " CURRENT_TIMESTAMP, 'SLIPDOC', ?, ?, ?, ?, ?, ?, '2', '1', '0', '0', '10' ,'0', '2', '1', ?, 'PC(SVR)', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, '1', ?, ? "
+     		+ " GetDate(), 'SLIPDOC', ?, ?, ?, ?, ?, ?, '2', '1', '0', '0', '10' ,'0', '2', '1', ?, 'PC(SVR)', ?, GetDate(), GetDate(), ?, '1', ?, ? "
      		+ ")  ";
      public final static String INSERT_SLIP = " Insert Into IMG_SLIP_T ( SLIP_IRN, CABINET, FOLDER, DOC_IRN, SDOC_NO, SLIP_NO, REG_TIME, FILE_SIZE, SLIP_TITLE, SLIP_STEP,"
      		+ " SLIP_FLAG, SLIP_RECT, SLIP_ROTATE )"
-    		+ " Values ( ?, CURRENT_TIMESTAMP, 'SLIP', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ? )";
+    		+ " Values ( ?, GetDate(), 'SLIP', ?, ?, ?, GetDate(), ?, ?, ?, ?, ?, ? )";
 
 	public final static String INSERT_ADDFILE = " Insert Into IMG_SLIPDOC_T  ( CABINET, FOLDER, SDOC_NO, CORP_NO, PART_NO, REG_USER, SDOC_MONTH, SDOC_KIND, "
 			+ "SDOC_STEP, SDOC_FLAG, SDOC_URL, SDOC_AFTER, SDOC_PTI, SDOC_COPY, SDOC_SECU, SDOC_SYSTEM, SDOC_NAME, SDOC_DEVICE,"
 			+ " SLIP_CNT, REG_TIME, UPDATE_TIME, JDOC_NO, JDOC_INDEX, SDOC_FOLLOW, JDOC_TOP) "
 			+ "Values ("
-			+ " CURRENT_TIMESTAMP, 'ADDFILE', ?, ?, ?, ?, ?, ?, '2', '1', '1', '0', '10' ,'0', '2', '0', ?, 'PC(SVR)', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ? , ? "
+			+ " GetDate(), 'ADDFILE', ?, ?, ?, ?, ?, ?, '2', '1', '1', '0', '10' ,'0', '2', '0', ?, 'PC(SVR)', ?, GetDate(), GetDate(), ?, ?, ? , ? "
 			+ ")  ";
 	public final static String INSERT_ORGFILE = " Insert Into IMG_ORGFILE_T  ( ORG_IRN, CABINET, FOLDER, SDOC_NO, DOC_IRN, ORG_FILE, ORG_URL, FILE_SIZE, "
 			+ "REG_TIME, ORG_FLAG, FILE_HASH) "
 			+ "Values ("
-			+ " ?, CURRENT_TIMESTAMP,  ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ? "
+			+ " ?, GetDate(),  ?, ?, ?, ?, ?, ?, GetDate(), ?, ? "
 			+ ")  ";
 
 	public final static String UPDATE_JDOC = " ProcImg_JdocNo ?, ?, ?, ? ";
@@ -133,5 +133,8 @@ public class Queries {
 	public final static String SEARCH_SLIP = " exec ProcImg_Search ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ";
 	public final static String GET_SLIP_LIST_API = " exec ProcImg_Search ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ";
 
+	public final static String GET_PTI_STATUS = " Select PTI_STATUS From IMG_PTISVR_RESULT_T where PTI_KEY = ? ";
+	public final static String INSERT_PTI_STATUS = " Insert Into IMG_PTISVR_RESULT_T (IDX, PTI_KEY, PTI_TYPE, PTI_STATUS,REG_TIME) Values " +
+			"( ?, ?, ?, '01', ? ) ";
 
 }

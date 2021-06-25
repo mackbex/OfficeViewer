@@ -143,11 +143,11 @@
 				</div>
 			</div>
 			<div class="area_title_right">
-				<c:if test="${ViewMode eq 'EDIT' or ViewMode eq 'AFTER'}">
-					<div class="area_attach_list" onclick="javascript:$.Viewer.toggleAttachList();">
-						<img src="<c:url value="/image/pc/viewer/attach.png" />" />
-					</div>
-				</c:if>
+<%--				<c:if test="${ViewMode eq 'EDIT' or ViewMode eq 'AFTER'}">--%>
+<%--					<div class="area_attach_list" onclick="javascript:$.Viewer.toggleAttachList();">--%>
+<%--						<img src="<c:url value="/image/pc/viewer/attach.png" />" />--%>
+<%--					</div>--%>
+<%--				</c:if>--%>
 				<div class="area_attach_list close" onclick="javascript:$.Viewer.close();">
 					<img src="<c:url value="/image/pc/viewer/close.png" />" />
 				</div>

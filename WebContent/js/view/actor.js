@@ -5,7 +5,7 @@ $.Actor = {
 		localeMsg : null,
 		colorSet : null,
 		params : null,
-		slipRange : 10,
+		slipRange : 30,
 		attachRange : 100,
 		thumbWidth : 160,
 	//	startIdx : 0,
@@ -409,7 +409,7 @@ $.Actor = {
 
 
 			if("EACCT" !== $.Actor.params.VIEW_MODE.toUpperCase()) {
-				$.Actor.getAttachList($.Actor, $.Actor.params, $.Actor.attachRange);
+				// $.Actor.getAttachList($.Actor, $.Actor.params, $.Actor.attachRange);
 
 				if(!$.Actor.params.MULTI_KEY) {
 					$.Actor.getCommentCnt();
@@ -846,7 +846,14 @@ $.Actor = {
 
 				var item = arItems[arThumbInfo[i]];
 
-				var elItem = $("#slip_masonry").find("[idx=" + item.SLIP_IRN + "]")
+				var elItem = null;
+
+				if("SLIPDOC" === item.FOLDER.toUpperCase()) {
+					elItem = $("#slip_masonry").find("[idx=" + item.SLIP_IRN + "]")
+				} else {
+					elItem = $("#slip_masonry").find("[group=" + item.SDOC_NO + "]")
+				}
+
 				if (elItem.length) {
 				 	continue;
 				}
@@ -1004,13 +1011,15 @@ $.Actor = {
 
 				//Add thumb options
 				$.each(arElThumb, function(){
-
+					var idx = $(this).attr("idx");
 					$(this).css("opacity","1");
 					$(this).find('.area_effect').ripple({
 						maxDiameter: "200%"
 					});
 
-					var idx = $(this).attr("idx");
+					if("SLIPDOC" !== parent.objSlipItem[idx].FOLDER.toUpperCase()) {
+						return true;
+					}
 
 					var elTitleArea = $(this).find(".area_title_btn");
 
@@ -1443,7 +1452,7 @@ $.Actor = {
 			// 	elThumb.css("display","none");
 			// }
 
-			if($.Actor.USE_MAGNIFIER) {
+			if($.Actor.USE_MAGNIFIER && "SLIPDOC" === objData.FOLDER.toUpperCase()) {
 			//Magnifier button
 				var elMagnifier = $(document.createElement('div'));
 				elMagnifier.addClass("btn_magnifier");
@@ -1465,21 +1474,62 @@ $.Actor = {
 			
 			//Add image
 			var sbImgURL = new StringBuffer();
-			sbImgURL.append(this.rootURL);
-			sbImgURL.append("DownloadImage.do?");
-			sbImgURL.append("ImgType=thumb");
-			sbImgURL.append("&DocIRN="+objData.DOC_IRN);
-			sbImgURL.append("&Idx="+objData.DOC_NO);
-			sbImgURL.append("&degree="+objData.SLIP_ROTATE);
-			sbImgURL.append("&UserID="+callerObjData.params.USER_ID);
-			sbImgURL.append("&CorpNo="+callerObjData.params.CORP_NO);
-			sbImgURL.append('?'+Math.random());
-		
+
+			if("SLIPDOC" === objData.FOLDER.toUpperCase()) {
+				sbImgURL.append(this.rootURL);
+				sbImgURL.append("DownloadImage.do?");
+				sbImgURL.append("ImgType=thumb");
+				sbImgURL.append("&DocIRN=" + objData.DOC_IRN);
+				sbImgURL.append("&Idx=" + objData.DOC_NO);
+				sbImgURL.append("&degree=" + objData.SLIP_ROTATE);
+				sbImgURL.append("&UserID=" + callerObjData.params.USER_ID);
+				sbImgURL.append("&CorpNo=" + callerObjData.params.CORP_NO);
+				sbImgURL.append('?' + Math.random());
+			}
+			else {
+				var ext =  objData.ORG_FILENM.substring(objData.ORG_FILENM.indexOf(".") + 1, objData.ORG_FILENM.length);
+
+				switch (ext.toLowerCase()) {
+					case "xlsx":
+					case "xlsm":
+					case "xls":
+					case  "xltx":
+					case "xltm":
+					case "csv":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/xls.png");
+						break;
+					case "ppt":
+					case "pptm":
+					case "pptx":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/ppt.png");
+						break;
+					case "pdf":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/pdf.png");
+						break;
+					case "doc":
+					case "docx":
+					case "docm":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/word.png");
+					case "txt":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/txt.png");
+						break;
+					default :
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/attach.png");
+						break;
+
+				}
+			}
 			var vElImage = $(document.createElement('img'));
 			vElImage.attr("src",sbImgURL);
 			vElImage.attr("class","thumb_img");
 
-			if($.Actor.USE_MAGNIFIER) {
+			if($.Actor.USE_MAGNIFIER && "SLIPDOC" === objData.FOLDER.toUpperCase()) {
 				var oriImgUrl = sbImgURL.toString();
 				oriImgUrl = oriImgUrl.replaceAll("ImgType=thumb","");
 				vElImage.attr("data-zoom-image",oriImgUrl);
@@ -1488,11 +1538,18 @@ $.Actor = {
 				elMagnifier.unbind("click").on("click", function(){
 					$.Actor.toggleMagnifier($(this), vElImage, objData);
 				});
+
+				$(vElImageHref).append(vElImage);
+			}
+			else {
+				var imgContainer = $(document.createElement('div'));
+				imgContainer.append(vElImage);
+				imgContainer.attr("class","attach_icon");
+
+				$(vElImageHref).append(imgContainer);
+
 			}
 
-
-
-			$(vElImageHref).append(vElImage);
 			
 			
 			
@@ -1667,7 +1724,14 @@ $.Actor = {
 
 			var filteredTargetThumbs = [];
 			$.each(targetThumbs,function () {
-					var elItem = $("#slip_masonry").find("[idx=" + this.SLIP_IRN + "]")
+					var elItem = null;
+					if("SLIPDOC" === this.FOLDER.toUpperCase()) {
+						elItem = $("#slip_masonry").find("[idx=" + this.SLIP_IRN + "]");
+					}
+					else {
+						elItem = $("#slip_masonry").find("[group=" + this.SDOC_NO + "]");
+					}
+
 					if (elItem.length) {
 						elItem.show();
 					} else {
@@ -1745,7 +1809,15 @@ $.Actor = {
 
 			var filteredTargetThumbs = [];
 			$.each(targetThumbs,function () {
-				var elItem = $("#slip_masonry").find("[idx=" + this.SLIP_IRN + "]")
+
+				var elItem = null;
+				if("SLIPDOC" === this.FOLDER.toUpperCase()) {
+					elItem = $("#slip_masonry").find("[idx=" + this.SLIP_IRN + "]");
+				}
+				else {
+					elItem = $("#slip_masonry").find("[group=" + this.SDOC_NO + "]");
+				}
+
 				if (elItem.length) {
 					elItem.show();
 				} else {

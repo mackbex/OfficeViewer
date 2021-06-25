@@ -610,7 +610,7 @@ $.Viewer = {
 			elThumbTitle.appendTo(elThumbTitleArea);
 
 
-			if("1" === objData.SDOCNO_INDEX)
+			if("1" === objData.SDOCNO_INDEX && "SLIPDOC" === objData.FOLDER.toUpperCase())
 			{
 				var elThumbBtnArea = $(document.createElement('div'));
 				elThumbBtnArea.addClass("area_title_btn");
@@ -640,22 +640,76 @@ $.Viewer = {
 
 			//Add image
 			var sbImgURL = new StringBuffer();
-			sbImgURL.append(this.rootURL);
-			sbImgURL.append("DownloadImage.do?");
-			sbImgURL.append("ImgType=thumb");
-			sbImgURL.append("&DocIRN="+objData.DOC_IRN);
-			sbImgURL.append("&Idx="+objData.DOC_NO);
-			sbImgURL.append("&degree="+objData.SLIP_ROTATE);
-			sbImgURL.append("&UserID="+callerObjData.params.USER_ID);
-			sbImgURL.append("&CorpNo="+callerObjData.params.CORP_NO);
-			sbImgURL.append('?'+Math.random());
 
-			var vElImage = $(document.createElement('img'));
-			vElImage.attr("src",sbImgURL);
-			vElImage.attr("class","thumb_img");
+			if("SLIPDOC" === objData.FOLDER.toUpperCase()) {
+				sbImgURL.append(this.rootURL);
+				sbImgURL.append("DownloadImage.do?");
+				sbImgURL.append("ImgType=thumb");
+				sbImgURL.append("&DocIRN=" + objData.DOC_IRN);
+				sbImgURL.append("&Idx=" + objData.DOC_NO);
+				sbImgURL.append("&degree=" + objData.SLIP_ROTATE);
+				sbImgURL.append("&UserID=" + callerObjData.params.USER_ID);
+				sbImgURL.append("&CorpNo=" + callerObjData.params.CORP_NO);
+				sbImgURL.append('?' + Math.random());
 
-			$(vElImageHref).append(vElImage);
 
+				var vElImage = $(document.createElement('img'));
+				vElImage.attr("src",sbImgURL);
+				vElImage.attr("class","thumb_img");
+
+				$(vElImageHref).append(vElImage);
+			}
+			else {
+				var ext =  objData.ORG_FILENM.substring(objData.ORG_FILENM.indexOf(".") + 1, objData.ORG_FILENM.length);
+
+				switch (ext.toLowerCase()) {
+					case "xlsx":
+					case "xlsm":
+					case "xls":
+					case  "xltx":
+					case "xltm":
+					case "csv":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/xls.png");
+						break;
+					case "ppt":
+					case "pptm":
+					case "pptx":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/ppt.png");
+						break;
+					case "pdf":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/pdf.png");
+						break;
+					case "doc":
+					case "docx":
+					case "docm":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/word.png");
+					case "txt":
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/txt.png");
+						break;
+					default :
+						sbImgURL.append(g_RootURL);
+						sbImgURL.append("image/common/attach.png");
+						break;
+
+				}
+
+
+
+				var vElImage = $(document.createElement('img'));
+				vElImage.attr("src",sbImgURL);
+				vElImage.attr("class","thumb_img");
+
+				var imgContainer = $(document.createElement('div'));
+				imgContainer.append(vElImage);
+				imgContainer.attr("class","attach_icon");
+
+				$(vElImageHref).append(imgContainer);
+			}
 
 
 			var sbSlipInfo = new StringBuffer();
@@ -822,6 +876,30 @@ $.Viewer = {
 
 
 		},
+		displayOriginalAttach : function(){
+			$("#originalImage").empty();
+			$.Common.ShowProgress("#original_progress","Waiting..","000000","0.7");
+
+			var sbImgURL = new StringBuffer();
+			sbImgURL.append(g_RootURL);
+			sbImgURL.append("image/common/attach.png");
+
+			var elCenterVerticalHelper = $(document.createElement('span'));
+			elCenterVerticalHelper.addClass("helper");
+			elCenterVerticalHelper.appendTo($("#originalImage"));
+
+			var elImage = $(document.createElement('img'));
+			elImage.attr({
+				"src":sbImgURL.toString()
+			});
+			elImage.appendTo($("#originalImage"));
+			elImage.load(function() {
+				$.Common.HideProgress("#original_progress");
+			});
+
+
+			$.Viewer.resetViewer();
+		},
 		/**
 		 * Display original image
 		 */
@@ -908,11 +986,16 @@ $.Viewer = {
 					$.Viewer.displaySlipInfo(objSelelctedItem);
 
 					//Show original image
-					if(version > 9 && $.Viewer.isBookmarkLoaded) {
-						$.Viewer.displayCanvasOriginal(objSelelctedItem);
+					if("SLIPDOC" === objSelelctedItem.FOLDER.toUpperCase()) {
+
+						if(version > 9 && $.Viewer.isBookmarkLoaded) {
+							$.Viewer.displayCanvasOriginal(objSelelctedItem);
+						} else {
+							$.Viewer.displayOriginal(objSelelctedItem);
+						}
 					}
 					else {
-						$.Viewer.displayOriginal(objSelelctedItem);
+						$.Viewer.displayOriginalAttach(objSelelctedItem);
 					}
 
 				}

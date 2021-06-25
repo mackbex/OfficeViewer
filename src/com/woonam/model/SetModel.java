@@ -73,6 +73,36 @@ public class SetModel {
     	
     	return res;
 	}
+
+	public boolean insertPTIStatus(String convertKey, String ptiType) {
+		boolean res = false;
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		if (m_AC == null)	return false;
+
+		try
+		{
+
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.INSERT_PTI_STATUS);
+			pStmt.setString(0, m_C.getIRN(""));
+			pStmt.setString(1, convertKey);
+			pStmt.setString(2, ptiType);
+			pStmt.setDBDate(3);
+
+			String resQuery 	= m_AC.SetProcedure(pStmt.getQuery(), strFuncName);
+			String resFlag		= resQuery.substring(0,1);
+			int nResCnt			=  m_C.getResCnt(resQuery);
+			if(nResCnt > 0) res = true;
+
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+//			bRes = false;
+		}
+
+		return res;
+	}
 	
 	public boolean Update_reportStatus(String convertKey, String status) {
 		boolean res = false;

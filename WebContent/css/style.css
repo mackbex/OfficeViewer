@@ -709,7 +709,7 @@ table {
  * Actor
  */
  .actor_body {
-    min-height: 600px;
+    min-height: 200px;
     position: relative;
  }
  
@@ -758,7 +758,7 @@ table {
 	left: 0;
 	width: 50px;
 	height: 100%;
-	min-height: 600px;
+	min-height: 200px;
 }
 
 .wrapper .actor_left > div {
@@ -785,7 +785,7 @@ table {
 	left: 50px;
 	right:0px;
 	height: 100%;
-	min-height: 600px;
+	min-height: 200px;
 	overflow:hidden;
 }
 .actor_right .slip_title {
@@ -4629,4 +4629,7 @@ transform: rotate(90deg);
 .active {
 	display: block;
 	padding:0 20px;
+}
+.attach_icon {
+	padding:40px;
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.woonam.model.GetRFCModel;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
@@ -370,13 +371,16 @@ public class API {
 				}
 
 				case UPLOAD_TAX : {
-					String[] verifyList = {"APPR_NO", "TAX_TYPE", "KEY", "USER_ID", "CORP_NO"};
+					String[] verifyList = {"APPR_NO", "KEY", "USER_ID", "CORP_NO"};
 
 					if(!VerifyParams(verifyList, params)) {
 						return ResultMsg("F","ERR_INVALIED_PARAM");
 					}
 
-					JsonObject obj_taxInfo = m_GM.Get_taxConverList(params);
+					GetRFCModel grm = new GetRFCModel(m_AC);
+					JsonObject obj_taxInfo = grm.getTaxItem(params);
+
+//					JsonObject obj_taxInfo = m_GM.Get_taxConverList(params);
 
 					if(obj_taxInfo == null || obj_taxInfo.size() <= 0) {
 						return ResultMsg("F", "NO_TAX_LIST");
@@ -388,39 +392,40 @@ public class API {
 					int res_total = 0;
 //				for(int i=0; i<arObj_Res.size(); i++) {
 //					JsonObject resItem = arObj_Res.get(i).getAsJsonObject();
-					resStat = obj_taxInfo.get("PTI_STATUS").getAsString();
+					String convertKey = obj_taxInfo.get("ConvertKey").getAsString();
+					resStat = m_GM.getPTIStatus(convertKey);
+
+					if(m_C.isBlank(resStat)){
+						if(!m_SM.insertPTIStatus(convertKey, "03")) {
+							return ResultMsg("F", "FAILED_INSERT_STATUS");
+						}
+
+						resStat = "00";
+					}
 //				resStat = "00";
 					switch (resStat) {
 						case "00":
-							String itemKey = obj_taxInfo.get("ItemJoinKey").getAsString();
-							HashMap mapParamVals = new HashMap<String, String[]>();
-							String[] tempKey = {itemKey};
-							mapParamVals.put("APPR_NO", params.get("APPR_NO"));
-							mapParamVals.put("TAX_TYPE", params.get("TAX_TYPE"));
-							mapParamVals.put("KEY", params.get("KEY"));
-							mapParamVals.put("USER_ID", params.get("USER_ID"));
-							mapParamVals.put("CORP_NO", params.get("CORP_NO"));
-							mapParamVals.put("ITEM_KEY", tempKey);
 
-							JsonArray ar_taxItemList = m_GM.Get_taxItemConverList(mapParamVals);
+
 
 							Tax taxForm = new Tax(profile);
 
 							// Set work path
 							sbWorkPath.append(m_C.Get_RootPathForJava() + profile.getString("WAS_INFO", "TEMP_DIR",  "temp"));
+							sbWorkPath.append(File.separator);
 							sbWorkPath.append(m_C.getIRN(""));
 							sbWorkPath.append(m_C.getParamValue(params, "USER_ID", "system"));
 							sbWorkPath.append(m_C.getToday("yyyyMMddHHmmssSSS"));
 
-							obj_taxInfo.add("ITEM_LIST", ar_taxItemList);
+//							obj_taxInfo.add("ITEM_LIST", ar_taxItemList);
 
 							JsonObject obj_resImage 	= taxForm.run(obj_taxInfo, profile.getString("TEMPLATE", "TAX_BG", ""), sbWorkPath.toString());
 							if(obj_resImage == null || obj_resImage.size() <= 0) {
 								return ResultMsg("F", "FAILED_CREATE_TAX");
 							}
-							obj_resImage.addProperty("SDOC_KIND", obj_taxInfo.get("SDocKind").getAsString());
+							obj_resImage.addProperty("SDOC_KIND", "1003");
 
-							String convertKey = obj_resImage.get("CONVERT_KEY").getAsString();
+//							String convertKey = obj_resImage.get("CONVERT_KEY").getAsString();
 							UploadSlip upload = new UploadSlip(profile);
 							JsonObject res = upload.run(obj_resImage, params, sbWorkPath.toString());
 
@@ -598,7 +603,8 @@ public class API {
 						return ResultMsg("F","ERR_INVALIED_PARAM");
 					}
 
-					JsonObject obj_cardInfo = m_GM.Get_cardConverList(params);
+					GetRFCModel grm = new GetRFCModel(m_AC);
+					JsonObject obj_cardInfo = grm.getCocardData(params);
 
 					if(obj_cardInfo == null || obj_cardInfo.size() <= 0) {
 						return ResultMsg("F", "NO_CARD_LIST");
@@ -608,23 +614,34 @@ public class API {
 					String resStat = "";
 
 					int res_total = 0;
-					resStat = obj_cardInfo.get("PTI_STATUS").getAsString();
-//				resStat = "00";
+
+					String convertKey = obj_cardInfo.get("ConvertKey").getAsString();
+					resStat = m_GM.getPTIStatus(convertKey);
+
+					if(m_C.isBlank(resStat)){
+						if(!m_SM.insertPTIStatus(convertKey,"02")) {
+							return ResultMsg("F", "FAILED_INSERT_STATUS");
+						}
+
+						resStat = "00";
+					}
+//
 					switch (resStat) {
 						case "00":
 							CoCard cardForm 				= new CoCard(profile);
 
 							// Set work path
 							sbWorkPath.append(m_C.Get_RootPathForJava() + profile.getString("WAS_INFO", "TEMP_DIR",  "temp"));
+							sbWorkPath.append(File.separator);
 							sbWorkPath.append(m_C.getIRN(""));
 							sbWorkPath.append(m_C.getParamValue(params, "USER_ID", "system"));
 							sbWorkPath.append(m_C.getToday("yyyyMMddHHmmssSSS"));
 
 							JsonObject obj_resImage 	= cardForm.run(obj_cardInfo, profile.getString("TEMPLATE", "CARD_BG", ""), sbWorkPath.toString());
 
-							String convertKey = obj_resImage.get("CONVERT_KEY").getAsString();
+//							String convertKey = obj_resImage.get("CONVERT_KEY").getAsString();
 							UploadSlip upload = new UploadSlip(profile);
-							obj_resImage.addProperty("SDOC_KIND", obj_resImage.get("SDocKind").getAsString());
+							obj_resImage.addProperty("SDOC_KIND", "1007");
 							JsonObject res = upload.run(obj_resImage, params, sbWorkPath.toString());
 
 							if("T".equalsIgnoreCase(res.get("result").getAsString())) {

@@ -82,11 +82,16 @@ public class CoCard extends TemplateImpl{
 			tool.DrawText(strCardNo, nSecondVerticalLineX, 453);
 
 			//승인일
-			String strUsedDate = obj_cardInfo.get("UsedDate").getAsString();
-			String strUsedTime = obj_cardInfo.get("UsedTime").getAsString();
-			strUsedDate = strUsedDate.replaceAll("(\\d{4})(\\d{2})(\\d{2})", "$1년 $2월 $3일 ");
-			strUsedTime = strUsedTime.replaceAll("(\\d{2})(\\d{2})(\\d{2})", "$1:$2");
-			tool.DrawText(strUsedDate+strUsedTime, nFirstVerticalLineX, 698);
+//			String strUsedDate = obj_cardInfo.get("UsedDate").getAsString();
+//			String strUsedTime = obj_cardInfo.get("UsedTime").getAsString();
+//			strUsedDate = strUsedDate.replaceAll("(\\d{4})(\\d{2})(\\d{2})", "$1년 $2월 $3일 ");
+//			strUsedTime = strUsedTime.replaceAll("(\\d{2})(\\d{2})(\\d{2})", "$1:$2");
+//			tool.DrawText(strUsedDate+strUsedTime, nFirstVerticalLineX, 698);
+
+			String apprDate = obj_cardInfo.get("ApprDate").getAsString();
+			tool.DrawText(apprDate, nFirstVerticalLineX, 698);
+
+
 
 			//승인번호
 			String strApprNo = obj_cardInfo.get("ApprNo").getAsString();

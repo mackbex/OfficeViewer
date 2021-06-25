@@ -598,21 +598,57 @@ public class GetModel {
     	
     	return arObj_Res;
 	}
-	
+
+	public String getPTIStatus(String ptiKey)
+	{
+		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
+		String res = null;
+		//JsonObject objRes = new JsonObject();
+
+		if (m_AC == null)	return null;
+
+		try
+		{
+			PreparedStatement pStmt = new PreparedStatement(m_Profile);
+			pStmt.setQuery(Queries.GET_PTI_STATUS);
+			pStmt.setString(0, ptiKey);
+			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
+
+			while(m_AC.next())
+			{
+				JsonObject obj_Item = new JsonObject();
+
+				//String strResPTIStat			=	m_AC.GetString("PTI_STATUS");
+				//objRes.addProperty("PTI_STATUS", strResPTIStat);
+				res = m_AC.GetString("PTI_STATUS");
+//				if("00".equalsIgnoreCase(obj_Item.get("PTI_STATUS").toString()) || "01".equalsIgnoreCase(obj_Item.get("PTI_STATUS").toString())) {
+//					obj_Item.addProperty("PTI_STATUS", "10");
+//				}
+
+			}
+		}
+		catch(Exception e)
+		{
+			logger.error(strFuncName, e);
+		}
+
+		return res;
+	}
+
 	public JsonObject Get_cardConverList(Map<String, Object> mapParams)
 	{
 		String strFuncName 	= new Object(){}.getClass().getEnclosingMethod().getName();
 		JsonObject obj_res = new JsonObject();
 		//JsonObject objRes = new JsonObject();
-		
+
 		if (m_AC == null)	return null;
-		
+
 		String[] strApprNo	= m_C.getParamValue(mapParams, "APPR_NO");
 		String strPTIstat	= m_C.getParamValue(mapParams, "PTI_STATUS", null);
 		String strDate		= m_C.getParamValue(mapParams, "USED_DATE", null);
 		String strCnt		= m_C.getParamValue(mapParams, "ROW_CNT", "1");
 		String strRes		= m_C.getParamValue(mapParams, "RESULT", "T");
-		
+
 		try
 		{
 			PreparedStatement pStmt = new PreparedStatement(m_Profile);
@@ -623,25 +659,25 @@ public class GetModel {
 			pStmt.setString(3, strCnt);
 			pStmt.setString(4, strRes);
 			m_AC.GetProcedure(pStmt.getQuery(), strFuncName);
-				
+
 			while(m_AC.next())
 			{
 				JsonObject obj_Item = new JsonObject();
-				
+
 				//String strResPTIStat			=	m_AC.GetString("PTI_STATUS");
 				//objRes.addProperty("PTI_STATUS", strResPTIStat);
 				obj_res = m_AC.Get_itemObj(obj_Item, m_AC.Get_CurIndex());
 //				if("00".equalsIgnoreCase(obj_Item.get("PTI_STATUS").toString()) || "01".equalsIgnoreCase(obj_Item.get("PTI_STATUS").toString())) {
 //					obj_Item.addProperty("PTI_STATUS", "10");
 //				}
-				
+
 			}
 		}
 		catch(Exception e)
 		{
 			logger.error(strFuncName, e);
 		}
-    	
+
     	return obj_res;
 	}
 
