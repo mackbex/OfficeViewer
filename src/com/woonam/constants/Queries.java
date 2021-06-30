@@ -29,7 +29,7 @@ public class Queries {
 	public final static String CHANGE_KEY = "EXEC ProcImg_JdocNo_Change ?, ?, ?, ?";
 	public final static String GET_COMMENT_COUNT = "EXEC ProcImg_Comment_Cnt ?";
 
-	public final static String REMOVE_ALL = "EXEC ProcImg_JdocNo_Del ?, ?, ?";
+	public final static String REMOVE_ALL = "EXEC ProcImg_JdocNo_Del ?, ?, ?, ?";
 	public final static String REMOVE_SLIP = "EXEC ProcImg_Slip_Del ?, ?, ?, ?";
 	public final static String ROTATE_SLIP = "EXEC ProcImg_Slip_Rotate ?, ?, ?";
 	public final static String REMOVE_ATTACH = "EXEC ProcImg_AddFile_Del ?, ?, ?, ?";

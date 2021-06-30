@@ -213,6 +213,7 @@ public class API {
 					mapVals.put("VALUE", params.get("KEY"));
 					mapVals.put("USER_ID", params.get("USER_ID"));
 					mapVals.put("CORP_NO", params.get("CORP_NO"));
+					mapVals.put("FIELD", params.get("FIELD"));
 
 					boolean bRes = m_SM.removeAll(mapVals);
 

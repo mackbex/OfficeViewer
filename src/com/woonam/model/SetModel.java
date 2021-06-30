@@ -882,7 +882,8 @@ public boolean Copy_Replace(String jdocNo, String sdocNo, String corpNo, String 
 			pStmt.setQuery(Queries.REMOVE_ALL);
     		pStmt.setString(0, key);
     		pStmt.setString(1, corpNo);
-    		pStmt.setString(2, userID);
+			pStmt.setString(2, userID);
+			pStmt.setString(3, keyType);
     		
     		String res 			= m_AC.SetProcedure(pStmt.getQuery(), strFuncName);
     		String resFlag		= res.substring(0,1);
